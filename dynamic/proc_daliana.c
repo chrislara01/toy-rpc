@@ -40,6 +40,8 @@ void *do_work(void *data)
 {
     my_struct_t *d = (my_struct_t *)(data);
 
+    d->res = 0; // Inicializar el resultado
+
     if (d->op1 == 1)
     {
         d->res = d->op2 + d->op3; // Suma
@@ -58,20 +60,10 @@ void *do_work(void *data)
         {
             d->res = d->op2 / d->op3; // División
         }
-        else
-        {
-            printf("Error: División entre cero.\n");
-            
-        }
     }
     else if (d->op1 == 5)
     {
         power(d->op2, d->op3, &(d->res)); // Potencia
-    }
-    else
-    {
-        printf("Error: Operación no válida.\n");
-        
     }
 
     return data;
@@ -84,7 +76,19 @@ reportable_t *report(void *data)
 
     d->parent.data = (char *)(malloc(255 * sizeof(char)));
 
-    snprintf(d->parent.data, 255, "Result: %ld\n", d->res);
+    if (d->op1 < 1 || d->op1 > 5) //Si es un número que no está entre 1 y 5 error
+    {
+        snprintf(d->parent.data, 255, "Error: Operación no válida.\n");
+    }
+    else if (d->op1 == 4 && d->op3 == 0) //Si la operación es de división y el denominador es 0, error
+    {
+        snprintf(d->parent.data, 255, "Error: División entre cero.\n");
+    }
+    else
+    {
+        snprintf(d->parent.data, 255, "Resultado: %ld\n", d->res);
+    }
+
     d->parent.len = strlen(d->parent.data);
 
     return (reportable_t *)(data);
