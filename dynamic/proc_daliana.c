@@ -1,7 +1,7 @@
 #include "../rpc.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
+
 
 typedef struct
 {
@@ -16,7 +16,20 @@ typedef struct
 // Función auxiliar para calcular la potencia
 void power(long unsigned int base, long unsigned int exponent, long unsigned int *result)
 {
-    *result = (long unsigned int)pow(base, exponent);
+    *result = 1;
+    for (long unsigned int i = 0; i < exponent; i++) {
+        *result *= base;
+    }
+}
+
+//Función que calcula el factorial de un número
+void factorial(long unsigned int n, long unsigned int *result)
+{
+    long unsigned int fact = 1;
+    for (int i = 1; i <= n; i++) {
+        fact *= i;
+    }
+    *result = fact;
 }
 
 // Esta función se encarga de analizar y extraer los parámetros de entrada del buffer
@@ -35,7 +48,7 @@ void *parse_parameters(void *data)
 }
 
 /*Esta función se encarga de realizar las operaciones de suma, resta, multiplicación, división y potencia en dependencia del valor
-del primer parámetro*/
+del primer parámetro. También puede calcular el factorial del mayor operando*/
 void *do_work(void *data)
 {
     my_struct_t *d = (my_struct_t *)(data);
@@ -65,6 +78,10 @@ void *do_work(void *data)
     {
         power(d->op2, d->op3, &(d->res)); // Potencia
     }
+    else if (d->op1 == 6) {
+        long unsigned int mayor = d->op2 > d->op3 ? d->op2 : d->op3; // Obtener el mayor de los otros dos operandos
+        factorial(mayor, &(d->res)); // Calcular el factorial del mayor
+    }
 
     return data;
 }
@@ -76,7 +93,7 @@ reportable_t *report(void *data)
 
     d->parent.data = (char *)(malloc(255 * sizeof(char)));
 
-    if (d->op1 < 1 || d->op1 > 5) //Si es un número que no está entre 1 y 5 error
+    if (d->op1 < 1 || d->op1 > 6) //Si es un número que no está entre 1 y 6 error
     {
         snprintf(d->parent.data, 255, "Error: Operación no válida.\n");
     }
