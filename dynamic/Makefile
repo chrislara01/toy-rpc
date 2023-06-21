@@ -2,6 +2,7 @@ CC := gcc
 
 PACKAGES := \
 	drmollineda.so \
+	jochong.so \
 	daliana.so
 
 %.so: proc_%.c
