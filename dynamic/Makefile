@@ -3,7 +3,8 @@ CC := gcc
 PACKAGES := \
 	drmollineda.so \
 	jochong.so \
-	daliana.so
+	daliana.so \
+	christian.so
 
 %.so: proc_%.c
 	$(CC) -shared -fpic -o $@ $^
